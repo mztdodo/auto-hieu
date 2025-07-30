@@ -1,0 +1,31 @@
+name: Automated Commit
+
+on:
+  schedule:
+    - cron: "0 */12 * * *"  # Mỗi 12 giờ chạy 1 lần
+  workflow_dispatch:  # Cho phép chạy bằng tay
+
+permissions:
+  contents: write
+
+jobs:
+  update_commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Git config
+        run: |
+          git config user.name "PhamHieuh2rqs"
+          git config user.email "your-email@example.com"  # thay bằng email commit của bạn
+
+      - name: Update timestamp
+        run: echo "Last updated: $(date)" > TIMESTAMP.txt
+
+      - name: Commit and push changes
+        run: |
+          git add TIMESTAMP.txt
+          git diff --cached --quiet || git commit -m "🤖 Auto update timestamp"
+          git push
